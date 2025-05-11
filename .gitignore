@@ -1,0 +1,29 @@
+# dependencias
+/node_modules
+
+# archivos de compilación
+/dist
+/build
+
+# archivos de configuración del sistema
+.DS_Store
+Thumbs.db
+
+# archivos de configuración del editor
+.idea
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+
+# archivos de registro
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# archivos de entorno
+.env
+
+# TypeScript
+*.tsbuildinfo
