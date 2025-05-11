@@ -1,0 +1,31 @@
+ssh ubuntu@3.12.57.157 -i we-u.pem
+
+sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+
+apt install certbot python3-certbot-nginx
+
+certbot --nginx -d api.web.weu.nousproyect.com -d www.api.web.weu.nousproyect.com
+
+systemctl status certbot.timer
+
+certbot renew --dry-run
+
+
+- configurar body size
+sudo nginx -t
+
+/etc/nginx/nginx.conf
+
+-agregar esta linea
+client_max_body_size 50M;
+
+adminweu
+Weu-db2023
+
+we-u.c0zq7f2nt9d8.us-east-2.rds.amazonaws.com 
+root
+pIvFBZWi157g7wn32mMF
+
+
+certbot --nginx -d api.inaig.nousproyect.com -d www.api.inaig.nousproyect.com
+

@@ -1,0 +1,31 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.zoneRoutes = exports.userRoutes = exports.uploadRoutes = exports.subscriptionRoutes = exports.reportRoutes = exports.notificationRoutes = exports.mapsRoutes = exports.logbookRoutes = exports.helpRequest = exports.complaintRoutes = exports.catalogRoutes = exports.authRoutes = void 0;
+const auth_routes_1 = __importDefault(require("./auth.routes"));
+exports.authRoutes = auth_routes_1.default;
+const upload_routes_1 = __importDefault(require("./upload.routes"));
+exports.uploadRoutes = upload_routes_1.default;
+const user_routes_1 = __importDefault(require("./user.routes"));
+exports.userRoutes = user_routes_1.default;
+const catalog_routes_1 = __importDefault(require("./catalog.routes"));
+exports.catalogRoutes = catalog_routes_1.default;
+const zone_routes_1 = __importDefault(require("./zone.routes"));
+exports.zoneRoutes = zone_routes_1.default;
+const helpRequest_routes_1 = __importDefault(require("./helpRequest.routes"));
+exports.helpRequest = helpRequest_routes_1.default;
+const notification_routes_1 = __importDefault(require("./notification.routes"));
+exports.notificationRoutes = notification_routes_1.default;
+const complaint_routes_1 = __importDefault(require("./complaint.routes"));
+exports.complaintRoutes = complaint_routes_1.default;
+const logbook_routes_1 = __importDefault(require("./logbook.routes"));
+exports.logbookRoutes = logbook_routes_1.default;
+const maps_routes_1 = __importDefault(require("./maps.routes"));
+exports.mapsRoutes = maps_routes_1.default;
+const subscription_routes_1 = __importDefault(require("./subscription.routes"));
+exports.subscriptionRoutes = subscription_routes_1.default;
+const report_routes_1 = __importDefault(require("./report.routes"));
+exports.reportRoutes = report_routes_1.default;
+//# sourceMappingURL=index.routes.js.map
