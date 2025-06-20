@@ -67,6 +67,7 @@ class Server {
                 console.log('Base de datos Online');
             }
             catch (error) {
+                console.warn({ error });
                 throw new Error('' + error);
             }
         });
