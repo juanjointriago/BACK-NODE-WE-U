@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const user_controller_1 = require("../controller/user.controller");
+const validator_jwt_middlewares_1 = require("../middleware/validator-jwt.middlewares");
+const validateInputsUser_1 = require("../middleware/validations/validateInputsUser");
+const asyncMiddleware_1 = require("../middleware/asyncMiddleware");
+const router = (0, express_1.Router)();
+router.get('/avatars/', (0, asyncMiddleware_1.asyncMiddleware)(user_controller_1.getAvatars));
+router.get('/subscriber/payments/:idUser', validator_jwt_middlewares_1.validatorJWT, (0, asyncMiddleware_1.asyncMiddleware)(user_controller_1.getPaymentsByUserId));
+router.get('/getUserById/:id', validator_jwt_middlewares_1.validatorJWT, user_controller_1.getUserById);
+router.get('/geInfotUserLogged', validator_jwt_middlewares_1.validatorJWT, user_controller_1.geInfotUserLogged);
+router.get('/getASCOnline', validator_jwt_middlewares_1.validatorJWT, user_controller_1.getASCOnline);
+router.get('/zone/:zone_id', [validator_jwt_middlewares_1.validatorJWT], (0, asyncMiddleware_1.asyncMiddleware)(user_controller_1.getAscByZone));
+router.get('/subzone/:subzone_id', [validator_jwt_middlewares_1.validatorJWT], (0, asyncMiddleware_1.asyncMiddleware)(user_controller_1.getAscBySubzone));
+router.post('/getUsers', [...validateInputsUser_1.validateFieldsGetUsers, validator_jwt_middlewares_1.validatorJWT], user_controller_1.getUsers);
+router.post('/getUsersFiveKmAround', validator_jwt_middlewares_1.validatorJWT, user_controller_1.getUsersFiveKmAround);
+router.put('/changeStatusUserById', [...validateInputsUser_1.validateFieldsChangeStatusUserById, validator_jwt_middlewares_1.validatorJWT], user_controller_1.changeStatusUserById);
+router.put('/available', [validator_jwt_middlewares_1.validatorJWT], (0, asyncMiddleware_1.asyncMiddleware)(user_controller_1.updateAvailableAsc));
+router.put('/updateAddressAndCoords', [...validateInputsUser_1.validateFieldsUpdateAddressAndCoords, validator_jwt_middlewares_1.validatorJWT], user_controller_1.updateAddressAndCoords);
+router.put('/updateAddressAndCoords/:idCity', [...validateInputsUser_1.validateFieldsUpdateAddressAndCoords, validator_jwt_middlewares_1.validatorJWT], user_controller_1.updateAddressAndCoords);
+router.put('/updateInfoUser', validator_jwt_middlewares_1.validatorJWT, user_controller_1.updateInfoUser);
+router.put('/subzone', validator_jwt_middlewares_1.validatorJWT, (0, asyncMiddleware_1.asyncMiddleware)(user_controller_1.updateSubzoneByUserId));
+router.delete('/deleteUser', validator_jwt_middlewares_1.validatorJWT, user_controller_1.deleteUser);
+exports.default = router;
+//# sourceMappingURL=user.routes.js.map
