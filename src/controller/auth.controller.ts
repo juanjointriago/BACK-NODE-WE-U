@@ -178,7 +178,6 @@ export const registerUsers = async (req: Request, res: Response) => {
  */
 export const loginAdmin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
   try {
     const user = await User.findOne({
       where: {

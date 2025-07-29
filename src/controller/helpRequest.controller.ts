@@ -64,6 +64,7 @@ export const getHelpRequest = async (req: Request, res: Response) => {
     }
 
     if (data.role_id === UserRoles.SubAdmin) {
+      
       const helpRequest = await HelpRequest.findAndCountAll({
         where: {
           zone_id: { [Op.in]: zonesAdmin },
@@ -89,10 +90,11 @@ export const getHelpRequest = async (req: Request, res: Response) => {
         order: [['created_at', 'DESC']],
         limit: 20,
       });
-
+      
       if (helpRequest.count === 0) return customResponse(false, res, 404, `No se encontraron solicitudes`, null);
 
       for (const help of helpRequest.rows) {
+        console.log(`user.photo_profile JERRY: ${help.get().user.photo_profile}`);
         if (help.get().user) help.get().user.photo_profile = await generateSignedUrlGCS(help.get().user.photo_profile, getFolderUserPhotoProfile(help.get().user.photo_profile));
         if (help.get().asc) help.get().asc.photo_profile = await generateSignedUrlGCS(help.get().asc.photo_profile, getFolderUserPhotoProfile(help.get().asc.photo_profile));
       }

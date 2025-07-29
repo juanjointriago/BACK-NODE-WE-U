@@ -101,6 +101,7 @@ const getHelpRequest = (req, res) => __awaiter(void 0, void 0, void 0, function*
             if (helpRequest.count === 0)
                 return (0, customResponses_1.customResponse)(false, res, 404, `No se encontraron solicitudes`, null);
             for (const help of helpRequest.rows) {
+                console.log(`user.photo_profile JERRY: ${help.get().user.photo_profile}`);
                 if (help.get().user)
                     help.get().user.photo_profile = yield (0, gc_storage_1.generateSignedUrlGCS)(help.get().user.photo_profile, (0, utils_1.getFolderUserPhotoProfile)(help.get().user.photo_profile));
                 if (help.get().asc)

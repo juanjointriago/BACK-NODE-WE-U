@@ -56,7 +56,7 @@ export const validatorJWT = async (req: Request, res: Response, next: NextFuncti
         },
         {
           model: Subscription,
-          attributes: ['id', 'date_expiration', 'state'],
+          attributes: ['id', 'num_asc', 'num_subzones', 'total', 'date_expiration', 'state'],
         },
       ],
     });
@@ -73,7 +73,7 @@ export const validatorJWT = async (req: Request, res: Response, next: NextFuncti
 
     if (user.get().role_id === UserRoles.Subscriber) {
       if (user.get().subscription.state === false) {
-        return customResponse(false, res, 402, 'Tu suscripción ha expirado, renuevala', null);
+        return customResponse(false, res, 402, 'Tu suscripción ha expirado, renuevala', user.toJSON());
       }
 
       const dateExpiration = new Date(user.get().subscription.date_expiration);
@@ -81,8 +81,70 @@ export const validatorJWT = async (req: Request, res: Response, next: NextFuncti
 
       if (dateExpiration < now) {
         await Subscription.update({ state: false }, { where: { user_id: id } });
-        return customResponse(false, res, 402, 'Tu suscripción ha expirado, renuevala', null);
+        return customResponse(false, res, 402, 'Tu suscripción ha expirado, renuevala', user.toJSON());
       }
+    }
+    req.body.data = user.toJSON();
+
+    next();
+  } catch (error) {
+    console.log(error);
+
+    return customResponse(false, res, 401, 'Acceso denegado', null);
+  }
+};
+
+export const validatorOnlyJWT = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const Authorization = req.header('Authorization');
+
+    if (!Authorization) {
+      return res.status(401).json({
+        msg: 'No hay el token en la petición',
+      });
+    }
+
+    const { object }: any = jwt.verify(Authorization, `${process.env.SECRETORPRIVATEKEY}`);
+
+    const { id } = object;
+
+    const user = await User.findOne({
+      where: { id, is_active: 1, is_deleted: 0 },
+      attributes: { exclude: ['accessed_at', 'is_deleted', 'password', 'updated_at'] },
+      include: [
+        {
+          model: Role,
+          attributes: ['id', 'rol_name'],
+        },
+        {
+          model: PoliticaDivision,
+          attributes: ['id', 'name', 'code'],
+          as: 'zone',
+        },
+        {
+          model: Subzone,
+          attributes: ['id', 'name'],
+          as: 'subzone',
+        },
+        {
+          model: TypeASC,
+          attributes: ['id', 'asc_name'],
+        },
+        {
+          model: Subscription,
+          attributes: ['id', 'num_asc', 'num_subzones', 'total', 'date_expiration', 'state'],
+        },
+      ],
+    });
+
+    if (!user) {
+      return customResponse(false, res, 401, 'Acceso denegado', null);
+    }
+
+    if (req.originalUrl === '/api/subscription/payment') {
+      req.body.data = user.toJSON();
+
+      return next();
     }
     req.body.data = user.toJSON();
 

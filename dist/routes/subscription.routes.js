@@ -15,7 +15,7 @@ router.post('/subzone', [validator_jwt_middlewares_1.validatorJWT, ...validateIn
 router.post('/validations', validateInputsSubscription_1.preValidateRegisterSubscriber, (0, asyncMiddleware_1.asyncMiddleware)(subscription_controller_1.validationFieldRegisterSubscriber));
 router.post('/payment/asc', [validator_jwt_middlewares_1.validatorJWT, ...validateInputsSubscription_1.validatePayment], (0, asyncMiddleware_1.asyncMiddleware)(subscription_controller_1.paymentAsc));
 router.post('/payment/subzone', [validator_jwt_middlewares_1.validatorJWT, ...validateInputsSubscription_1.validatePaymentSubzones], (0, asyncMiddleware_1.asyncMiddleware)(subscription_controller_1.paymentSubZone));
-router.post('/payment/monthly', [validator_jwt_middlewares_1.validatorJWT, ...validateInputsSubscription_1.validatePayment], (0, asyncMiddleware_1.asyncMiddleware)(subscription_controller_1.paymentSubscriptionMonthly));
+router.post('/payment/monthly', [validator_jwt_middlewares_1.validatorOnlyJWT, ...validateInputsSubscription_1.validatePayment], (0, asyncMiddleware_1.asyncMiddleware)(subscription_controller_1.paymentSubscriptionMonthly));
 router.put('/subzone/asc', [validator_jwt_middlewares_1.validatorJWT, ...validateInputsSubscription_1.validateUpdateSubzoneByAscId], (0, asyncMiddleware_1.asyncMiddleware)(subscription_controller_1.updateSubzoneByAscId));
 exports.default = router;
 //# sourceMappingURL=subscription.routes.js.map

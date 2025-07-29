@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validatorJWT = void 0;
+exports.validatorOnlyJWT = exports.validatorJWT = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const customResponses_1 = require("../helpers/customResponses");
 const rol_model_1 = __importDefault(require("../models/rol.model"));
@@ -65,7 +65,7 @@ const validatorJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
                 },
                 {
                     model: subscription_model_1.default,
-                    attributes: ['id', 'date_expiration', 'state'],
+                    attributes: ['id', 'num_asc', 'num_subzones', 'total', 'date_expiration', 'state'],
                 },
             ],
         });
@@ -78,13 +78,13 @@ const validatorJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         }
         if (user.get().role_id === user_enum_1.UserRoles.Subscriber) {
             if (user.get().subscription.state === false) {
-                return (0, customResponses_1.customResponse)(false, res, 402, 'Tu suscripción ha expirado, renuevala', null);
+                return (0, customResponses_1.customResponse)(false, res, 402, 'Tu suscripción ha expirado, renuevala', user.toJSON());
             }
             const dateExpiration = new Date(user.get().subscription.date_expiration);
             const now = new Date();
             if (dateExpiration < now) {
                 yield subscription_model_1.default.update({ state: false }, { where: { user_id: id } });
-                return (0, customResponses_1.customResponse)(false, res, 402, 'Tu suscripción ha expirado, renuevala', null);
+                return (0, customResponses_1.customResponse)(false, res, 402, 'Tu suscripción ha expirado, renuevala', user.toJSON());
             }
         }
         req.body.data = user.toJSON();
@@ -96,4 +96,58 @@ const validatorJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.validatorJWT = validatorJWT;
+const validatorOnlyJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const Authorization = req.header('Authorization');
+        if (!Authorization) {
+            return res.status(401).json({
+                msg: 'No hay el token en la petición',
+            });
+        }
+        const { object } = jsonwebtoken_1.default.verify(Authorization, `${process.env.SECRETORPRIVATEKEY}`);
+        const { id } = object;
+        const user = yield user_model_1.default.findOne({
+            where: { id, is_active: 1, is_deleted: 0 },
+            attributes: { exclude: ['accessed_at', 'is_deleted', 'password', 'updated_at'] },
+            include: [
+                {
+                    model: rol_model_1.default,
+                    attributes: ['id', 'rol_name'],
+                },
+                {
+                    model: PoliticaDivision_model_1.default,
+                    attributes: ['id', 'name', 'code'],
+                    as: 'zone',
+                },
+                {
+                    model: subzone_model_1.default,
+                    attributes: ['id', 'name'],
+                    as: 'subzone',
+                },
+                {
+                    model: typeASC_model_1.default,
+                    attributes: ['id', 'asc_name'],
+                },
+                {
+                    model: subscription_model_1.default,
+                    attributes: ['id', 'num_asc', 'num_subzones', 'total', 'date_expiration', 'state'],
+                },
+            ],
+        });
+        if (!user) {
+            return (0, customResponses_1.customResponse)(false, res, 401, 'Acceso denegado', null);
+        }
+        if (req.originalUrl === '/api/subscription/payment') {
+            req.body.data = user.toJSON();
+            return next();
+        }
+        req.body.data = user.toJSON();
+        next();
+    }
+    catch (error) {
+        console.log(error);
+        return (0, customResponses_1.customResponse)(false, res, 401, 'Acceso denegado', null);
+    }
+});
+exports.validatorOnlyJWT = validatorOnlyJWT;
 //# sourceMappingURL=validator-jwt.middlewares.js.map

@@ -105,8 +105,9 @@ const registerSubscriber = (req, res) => __awaiter(void 0, void 0, void 0, funct
             // Save photos and update subscription and payment
             const extension = (0, upload_file_1.getExtension)(photo_ticket);
             const nameFile = `voucher_${identification}_${payment.get().num_order}`;
-            // await uploadFileGCS(photo_ticket, nameFile, 'vouchers');
-            yield (0, uploadFileFirebase_1.uploadFileFirebase)(photo_ticket, nameFile, 'vouchers');
+            // await uploadFileGCS(photo_ticket, nameFile, 'vouchers');\
+            //Aqui da error
+            //await uploadFileFirebase(photo_ticket, nameFile, 'vouchers');
             yield (subscription === null || subscription === void 0 ? void 0 : subscription.update({
                 photo_ticket: `${nameFile}.${extension}`,
             }));
@@ -451,7 +452,8 @@ const paymentSubscriptionMonthly = (req, res) => __awaiter(void 0, void 0, void 
             // Save photos and update subscription and payment
             const extension = (0, upload_file_1.getExtension)(photo_ticket);
             const nameFile = `voucher_${data.identification}_${payment.get().num_order}`;
-            yield (0, gc_storage_1.uploadFileGCS)(photo_ticket, nameFile, 'vouchers');
+            //Aqui da error
+            yield (0, uploadFileFirebase_1.uploadFileFirebase)(photo_ticket, nameFile, 'vouchers');
             // Update subscription
             yield subscription.update({
                 photo_ticket: `${nameFile}.${extension}`,
