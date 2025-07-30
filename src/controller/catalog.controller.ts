@@ -178,7 +178,7 @@ export const myZonesSelected = async (req: Request, res: Response) => {
             ],
           });
 
-    if (cities.length === 0) {
+    if (!cities || cities.length === 0) {
       return customResponse(false, res, 404, 'No tiene cantones seleccionados o aprobados para administrar', null);
     }
 
@@ -214,7 +214,7 @@ export const zonesSelected = async (req: Request, res: Response) => {
       ],
     });
 
-    if (cities.length === 0) {
+    if (!cities || cities.length === 0) {
       return customResponse(false, res, 404, 'No tiene cantones seleccionados o aprobados para administrar', null);
     }
 

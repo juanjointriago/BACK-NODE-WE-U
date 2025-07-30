@@ -172,4 +172,4 @@ export const generateSerialNumber = (serialNumber: string): string | null => {
  * @returns The folder name where the photo should be stored.
  */
 export const getFolderUserPhotoProfile = (nameFile: string) => 
-  (nameFile.length > 15 ? 'users' : 'avatars');
+  (!nameFile || nameFile.length > 15 ? 'users' : 'avatars');

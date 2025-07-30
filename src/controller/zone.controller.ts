@@ -316,7 +316,7 @@ export const getSubzoneByPoint = async (req: Request, res: Response): Promise<vo
     ],
   });
 
-  if (subzonesAndPolygons.length === 0) return customResponse(false, res, 404, `No se encontro subzonas`, undefined);
+  if (!subzonesAndPolygons || subzonesAndPolygons.length === 0) return customResponse(false, res, 404, `No se encontro subzonas`, undefined);
 
   for (const subzone of subzonesAndPolygons) {
     const isPointInPolygon = isCoordsInPolygon(
@@ -352,7 +352,7 @@ export const updateSubzone = async (req: Request, res: Response): Promise<void> 
   }
 
   // Check if the polygon has points
-  if (polygon.length === 0) {
+  if (!polygon || polygon.length === 0) {
     return customResponse(false, res, 401, 'No hay puntos de la subzona', undefined);
   }
 

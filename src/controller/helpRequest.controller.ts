@@ -110,7 +110,7 @@ export const getHelpRequest = async (req: Request, res: Response) => {
         },
       });
 
-      if (subzonesDB.length === 0) {
+      if (!subzonesDB || subzonesDB.length === 0) {
         return customResponse(false, res, 404, 'No tiene subzonas', null);
       }
 
@@ -329,7 +329,7 @@ export const getListHelpRequest = async (req: Request, res: Response) => {
         },
       });
 
-      if (subzonesDB.length === 0) {
+      if (!subzonesDB || subzonesDB.length === 0) {
         return customResponse(false, res, 404, 'No tiene subzonas', null);
       }
 
@@ -427,7 +427,7 @@ export const getMyHelpRequestAssigned = async (req: Request, res: Response) => {
       limit: 1,
     });
 
-    if (helpRequest.length === 0) return customResponse(false, res, 404, `No se encontraron solicitudes`, null);
+    if (!helpRequest || helpRequest.length === 0) return customResponse(false, res, 404, `No se encontraron solicitudes`, null);
 
     if (helpRequest[0].get().user) helpRequest[0].get().user.photo_profile = await generateSignedUrlGCS(helpRequest[0].get().user.photo_profile, getFolderUserPhotoProfile(helpRequest[0].get().user.photo_profile));
     if (helpRequest[0].get().asc) helpRequest[0].get().asc.photo_profile = await generateSignedUrlGCS(helpRequest[0].get().asc.photo_profile, getFolderUserPhotoProfile(helpRequest[0].get().asc.photo_profile));
@@ -468,7 +468,7 @@ export const postHelpRequest = async (req: Request, res: Response) => {
       order: [['created_at', 'DESC']],
     });
 
-    if (helpRequestALlDB.length > 0) {
+    if (!helpRequestALlDB || helpRequestALlDB.length > 0) {
       for (const help of helpRequestALlDB) {
         if (help.get().user) help.get().user.photo_profile = await generateSignedUrlGCS(help.get().user.photo_profile, getFolderUserPhotoProfile(help.get().user.photo_profile));
         if (help.get().asc) help.get().asc.photo_profile = await generateSignedUrlGCS(help.get().asc.photo_profile, getFolderUserPhotoProfile(help.get().asc.photo_profile));
@@ -502,7 +502,7 @@ export const updateHelpRequest = async (req: Request, res: Response) => {
           attributes: ['id'],
         });
 
-        if (helpRequestALlDB.length > 0) {
+        if (!helpRequestALlDB || helpRequestALlDB.length > 0) {
           return customResponse(false, res, 404, `Ya tiene un solicitud aceptada, no puede aceptar más`, null);
         }
       }
@@ -581,7 +581,7 @@ export const updateHelpRequest = async (req: Request, res: Response) => {
         attributes: ['id'],
       });
 
-      if (helpAux.length > 0) {
+      if (!helpAux || helpAux.length > 0) {
         return customResponse(false, res, 404, `El agente ya tiene una denuncia asignada, el agente solo puede atender una denuncia`, null);
       }
       const reqUpdated = await helpRequest.update({ agent_id });
