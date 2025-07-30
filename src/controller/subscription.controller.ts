@@ -96,9 +96,8 @@ export const registerSubscriber = async (req: Request, res: Response) => {
       // Save photos and update subscription and payment
       const extension = getExtension(photo_ticket);
       const nameFile = `voucher_${identification}_${payment.get().num_order}`;
-      // await uploadFileGCS(photo_ticket, nameFile, 'vouchers');\
-      //Aqui da error
-      //await uploadFileFirebase(photo_ticket, nameFile, 'vouchers');
+      // await uploadFileGCS(photo_ticket, nameFile, 'vouchers');
+      await uploadFileFirebase(photo_ticket, nameFile, 'vouchers');
       await subscription?.update({
         photo_ticket: `${nameFile}.${extension}`,
       });
@@ -502,7 +501,6 @@ export const paymentSubscriptionMonthly = async (req: Request, res: Response): P
       // Save photos and update subscription and payment
       const extension = getExtension(photo_ticket);
       const nameFile = `voucher_${data.identification}_${payment.get().num_order}`;
-      //Aqui da error
       await uploadFileFirebase(photo_ticket, nameFile, 'vouchers');
 
       // Update subscription

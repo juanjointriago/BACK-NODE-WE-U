@@ -47,17 +47,30 @@ const fs = __importStar(require("fs"));
 const firebase_1 = require("../config/firebase");
 function uploadFileFirebase(file, fileName, folder) {
     return __awaiter(this, void 0, void 0, function* () {
-        const filePath = fs.realpathSync(file.tempFilePath);
-        const extension = file.name.split('.').pop();
-        const destination = `${folder ? folder + '/' : ''}${fileName}.${extension}`;
-        yield firebase_1.bucket.upload(filePath, {
-            destination,
-            public: true,
-            metadata: {
-                contentType: file.mimetype,
-            },
-        });
-        return `https://storage.googleapis.com/${firebase_1.bucket.name}/${destination}`;
+        var _a;
+        try {
+            const filePath = fs.realpathSync(file.tempFilePath);
+            const extension = file.name.split('.').pop();
+            const destination = `${folder ? folder + '/' : ''}${fileName}.${extension}`;
+            const [uploadedFile] = yield firebase_1.bucket.upload(filePath, {
+                destination,
+                public: true,
+                metadata: {
+                    contentType: file.mimetype,
+                },
+            });
+            return `https://storage.googleapis.com/${firebase_1.bucket.name}/${destination}`;
+        }
+        catch (error) {
+            console.error('Error al subir a Firebase:', {
+                message: error.message,
+                code: error.code,
+                errors: error.errors,
+                stack: error.stack,
+                response: (_a = error.response) === null || _a === void 0 ? void 0 : _a.data,
+            });
+            throw new Error(`Error al subir archivo a Firebase: ${error.message}`);
+        }
     });
 }
 //# sourceMappingURL=uploadFileFirebase.js.map
