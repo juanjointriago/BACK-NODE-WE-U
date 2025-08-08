@@ -70,7 +70,7 @@ export const validateCreateUserASC = [
   check('email', 'El correo electronico no es válido').isEmail(),
   check('email', 'El correo electronico es obligatorio').not().isEmpty(),
   check('full_name', 'El nombre es un campo obligatorio').not().isEmpty(),
-  check('phone', 'El número telefónico no es válido').custom(phoneExist).isLength({ min: 10, max: 10 }),
+  check('phone', 'El número telefónico no es válido').isLength({ min: 10, max: 10 }),
   check('phone', 'El número telefónico es obligatorio').not().isEmpty(),
   // check('identification').custom(identificationExist),
   check('identification').custom(validIdentificationEC),

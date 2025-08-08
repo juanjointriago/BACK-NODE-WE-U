@@ -55,11 +55,11 @@ export const registerSubscriber = async (req: Request, res: Response) => {
   }
 
   // Check if user with the same email already exists
-  const isExistUser = await User.findOne({ where: { email: email, is_deleted: 0 } });
+  const isExistUser = await User.findOne({ where: { identification: identification, is_deleted: 0, role_id: UserRoles.Subscriber } });
 
   if (isExistUser) {
     // Return error response if user already exists
-    return customResponse(false, res, 400, `Un usuario con este correo electrónico '${email}' ya existe`, null);
+    return customResponse(false, res, 400, `Un usuario Suscriptor con cédula de identidad ${identification} ya existe`, null);
   }
 
   // Generate encrypted password
@@ -175,14 +175,14 @@ export const registerSubscriber = async (req: Request, res: Response) => {
  */
 export const validationFieldRegisterSubscriber = async (req: Request, res: Response): Promise<void> => {
   // Extract the email from the request body
-  const { email } = req.body;
+  const { email, identification } = req.body;
 
   // Check if user with the same email already exists
-  const isExistUser = await User.findOne({ where: { email: email, is_deleted: 0 } });
+  const isExistUser = await User.findOne({ where: { identification: identification, is_deleted: 0, role_id: UserRoles.Subscriber } });
 
   if (isExistUser) {
     // Return error response if user already exists
-    return customResponse(false, res, 400, `Un usuario con este '${email}' ya existe`, null);
+    return customResponse(false, res, 400, `Un usuario Suscriptor con cédula de identidad ${identification} ya existe`, null);
   }
 
   // Return success response
@@ -879,11 +879,12 @@ export const createUserASC = async (req: Request, res: Response) => {
     }
   }
 
-  // Check if a user with the same email already exists
-  const userPivote = await User.findOne({ where: { email: email, is_active: 1, is_deleted: 0 } });
+  // Check if a user with the same identification already exists
+  const userPivote = await User.findOne({ where: { identification: identification, is_deleted: 0, role_id: UserRoles.ASC } });
 
   if (userPivote) {
-    return customResponse(false, res, 400, `Un usuario con este '${email}' ya existe`, null);
+    // Return error response if user already exists
+    return customResponse(false, res, 400, `Un usuario ASC con cédula de identidad ${identification} ya existe`, null);
   }
 
   // Find the subzone by id

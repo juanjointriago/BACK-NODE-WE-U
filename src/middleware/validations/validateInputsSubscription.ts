@@ -23,7 +23,7 @@ export const validateRegisterSubscriber = [
   check('identification').custom(validIdentificationEC),
   check('payment_method', 'El campo debe ser un número').isNumeric(),
   check('payment_method').custom(validPaymentMethod),
-  check('phone', 'El número telefónico no es válido').custom(phoneExist).isLength({ min: 10, max: 10 }),
+  check('phone', 'El número telefónico no es válido').isLength({ min: 10, max: 10 }),
   check('phone', 'El número telefónico es obligatorio').not().isEmpty(),
   check('num_asc', 'El campo debe ser un número').isNumeric(),
   check('num_asc', 'El campo es obligatorio').not().isEmpty(),
@@ -43,7 +43,7 @@ export const preValidateRegisterSubscriber = [
   check('full_name', 'El nombre es un campo obligatorio').not().isEmpty(),
   // check('identification').custom(identificationExist),
   check('identification').custom(validIdentificationEC),
-  check('phone', 'El número telefónico no es válido').custom(phoneExist).isLength({ min: 10, max: 10 }),
+  check('phone', 'El número telefónico no es válido').isLength({ min: 10, max: 10 }),
   check('phone', 'El número telefónico es obligatorio').not().isEmpty(),
   validatorField,
   //

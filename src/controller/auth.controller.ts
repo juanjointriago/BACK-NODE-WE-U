@@ -117,10 +117,10 @@ export const registerUsers = async (req: Request, res: Response) => {
       }
     }
 
-    const userPivote = await User.findOne({ where: { email: email, is_active: 1, is_deleted: 0 } });
+    const userPivote = await User.findOne({ where: { email: email, is_active: 1, is_deleted: 0, role_id: { [Op.or]: [UserRoles.SubAdmin, UserRoles.Superadmin] } } });
 
     if (userPivote) {
-      return customResponse(false, res, 400, `Un usuario con este '${email}' ya existe`, null);
+      return customResponse(false, res, 400, `Un usuario con cédula de identidad '${identification}' ya existe`, null);
     }
 
     const passEncript = await generatePassword(password);

@@ -24,7 +24,7 @@ export const validateFieldsRegister = [
   check('email', 'El correo electronico es obligatorio').not().isEmpty(),
   check('password', 'El password es obligatorio').not().isEmpty(),
   check('password', 'Ingrese al menos 6 caracteres').isLength({ min: 6 }),
-  check('phone', 'El número telefónico no es válido').custom(phoneExist).isLength({ min: 10, max: 10 }),
+  check('phone', 'El número telefónico no es válido').isLength({ min: 10, max: 10 }),
   check('phone', 'El número telefónico es obligatorio').not().isEmpty(),
   // check('identification').custom(identificationExist),
   check('identification').custom(validIdentificationEC),
