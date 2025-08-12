@@ -257,6 +257,7 @@ export const createSubZone = async (req: Request, res: Response): Promise<void> 
   await DetailZonesSubAdmin.create({
     user_id: user.get().id,
     zone_id,
+    is_active: 1
   });
 
   // Create polygons for each point in the polygon array

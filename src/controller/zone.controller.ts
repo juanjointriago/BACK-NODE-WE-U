@@ -31,7 +31,7 @@ export const addZonesToSubAdmin = async (req: Request, res: Response) => {
           });
 
           if (!detail) {
-            await DetailZonesSubAdmin.create({ user_id: data.id, zone_id: code.id });
+            await DetailZonesSubAdmin.create({ user_id: data.id, zone_id: code.id, is_active: 1 });
           }
         });
       })

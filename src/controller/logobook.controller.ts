@@ -227,7 +227,7 @@ export const getLogbookById = async (req: Request, res: Response) => {
         },
       ],
     });
-
+console.log(logbook);
     customResponse(true, res, 200, logbook ? `Solicitudes encontradas` : 'No se encontraron registros', logbook);
   } catch (error) {
     console.error('---->', error);
