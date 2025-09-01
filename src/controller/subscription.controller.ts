@@ -373,7 +373,8 @@ export const paymentAsc = async (req: Request, res: Response): Promise<void> => 
       // Save photos and update subscription and payment
       const extension = getExtension(photo_ticket);
       const nameFile = `voucher_${data.identification}_${payment.get().num_order}`;
-      await uploadFileGCS(photo_ticket, nameFile, 'vouchers');
+      // await uploadFileGCS(photo_ticket, nameFile, 'vouchers');
+      await uploadFileFirebase(photo_ticket, nameFile, 'vouchers');
       // Update payment
       await payment?.update({
         voucher: `${nameFile}.${extension}`,
@@ -621,7 +622,8 @@ export const paymentSubZone = async (req: Request, res: Response): Promise<void>
       // Save photos and update subscription and payment
       const extension = getExtension(photo_ticket);
       const nameFile = `voucher_${data.identification}_${payment.get().num_order}`;
-      await uploadFileGCS(photo_ticket, nameFile, 'vouchers');
+      // await uploadFileGCS(photo_ticket, nameFile, 'vouchers');
+      await uploadFileFirebase(photo_ticket, nameFile, 'vouchers');
 
       // Update payment
       await payment?.update({
@@ -1035,7 +1037,7 @@ export const updateSubzoneByAscId = async (req: Request, res: Response): Promise
 
   // If the ASC subscriber relationship does not exist, return a 404 response
   if (!ascSubscriber) {
-    return customResponse(false, res, 404, `No existe el ASC`, null);
+    return customResponse(false, res, 404, `ASC no asignado`, null);
   }
 
   // Find the subzone by ID and check it's active and not deleted

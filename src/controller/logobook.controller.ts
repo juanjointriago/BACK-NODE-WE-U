@@ -134,7 +134,7 @@ export const getAllLogbooks = async (req: Request, res: Response) => {
       const zonesAdmin: number[] = await getZonesByAdmin(data.id);
       logbooks = await Logbook.findAndCountAll({
         where: { is_deleted: 0, zone_id: zoneId === 0 ? { [Op.in]: zonesAdmin } : zoneId },
-        attributes: ['id', 'date_until', 'hour_until', 'status'],
+        attributes: ['id', 'date_until', 'hour_until', 'status', 'created_at'],
         include: [
           {
             model: User,
@@ -172,7 +172,7 @@ export const getAllLogbooks = async (req: Request, res: Response) => {
 
       logbooks = await Logbook.findAndCountAll({
         where: { is_deleted: 0, subzone_id: { [Op.in]: subzones } },
-        attributes: ['id', 'date_until', 'hour_until', 'status'],
+        attributes: ['id', 'date_until', 'hour_until', 'status', 'created_at'],
         include: [
           {
             model: User,

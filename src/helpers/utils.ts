@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { IPhotosUser } from '../interfaces/auth.interfaces';
 import { uploadFileGCS } from './gc-storage';
+import { uploadFileFirebase } from './uploadFileFirebase';
 
 /**
  * Toma una cadena como argumento y devuelve un booleano
@@ -98,19 +99,24 @@ export const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toStri
  */
 export const savePhotosCreateUser = async ({ identification, photo_home, photo_id_back, photo_id_front, photo_profile, photo_ticket }: IPhotosUser) => {
   // Upload the home photo if it exists
-  photo_home && (await uploadFileGCS(photo_home, `photo_home_${identification}`, 'users'));
+  //photo_home && (await uploadFileGCS(photo_home, `photo_home_${identification}`, 'users'));
+  photo_home && (await uploadFileFirebase(photo_home, `photo_home_${identification}`, 'users'));
 
   // Upload the ID back photo if it exists
-  photo_id_back && (await uploadFileGCS(photo_id_back, `photo_id_back_${identification}`, 'users'));
+  //photo_id_back && (await uploadFileGCS(photo_id_back, `photo_id_back_${identification}`, 'users'));
+  photo_id_back && (await uploadFileFirebase(photo_id_back, `photo_id_back_${identification}`, 'users'));
 
   // Upload the ID front photo if it exists
-  photo_id_front && (await uploadFileGCS(photo_id_front, `photo_id_front_${identification}`, 'users'));
-
+  //photo_id_front && (await uploadFileGCS(photo_id_front, `photo_id_front_${identification}`, 'users'));
+  photo_id_front && (await uploadFileFirebase(photo_id_front, `photo_id_front_${identification}`, 'users'));
+  
   // Upload the profile photo if it exists
-  photo_profile && (await uploadFileGCS(photo_profile, `photo_profile_${identification}`, 'users'));
+  //photo_profile && (await uploadFileGCS(photo_profile, `photo_profile_${identification}`, 'users'));
+  photo_profile && (await uploadFileFirebase(photo_profile, `photo_profile_${identification}`, 'users'));
 
   // Upload the ticket photo if it exists
-  photo_ticket && (await uploadFileGCS(photo_ticket, `photo_ticket_${identification}`, 'users'));
+  //photo_ticket && (await uploadFileGCS(photo_ticket, `photo_ticket_${identification}`, 'users'));
+  photo_ticket && (await uploadFileFirebase(photo_ticket, `photo_ticket_${identification}`, 'users'));
 };
 
 /**
