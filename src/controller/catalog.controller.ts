@@ -6,6 +6,7 @@ import PoliticaDivision from '../models/PoliticaDivision.model';
 import { Op } from 'sequelize';
 import DetailZonesSubAdmin from '../models/detailZonesSubAdmin.model';
 import { UserRoles } from '../enums/user.enum';
+import Subzone from '../models/subzone.model';
 
 /**
  * Obtiene todos los roles de la base de datos y los devuelve en formato JSON
@@ -136,7 +137,7 @@ export const getProvincesAndtheirCities = async (req: Request, res: Response) =>
 export const myZonesSelected = async (req: Request, res: Response) => {
   try {
     const { data } = req.body;
-
+    //console.log(data);
     if (data.role_id !== UserRoles.Superadmin && data.role_id !== UserRoles.SubAdmin && data.role_id !== UserRoles.Subscriber) return customResponse(false, res, 404, 'No tiene autorización para esta petición', null);
 
     const cities =
@@ -161,7 +162,7 @@ export const myZonesSelected = async (req: Request, res: Response) => {
           })
         : await DetailZonesSubAdmin.findAll({
             where: { user_id: data.id, is_deleted: 0 },
-            attributes: ['id', 'is_active'],
+            attributes: ['id', 'is_active', 'user_id'],
             include: [
               {
                 model: PoliticaDivision,
@@ -182,7 +183,43 @@ export const myZonesSelected = async (req: Request, res: Response) => {
       return customResponse(false, res, 404, 'No tiene cantones seleccionados o aprobados para administrar', null);
     }
 
-    return customResponse(true, res, 200, `Provincia encontrada`, cities);
+    const citiesWithZones = await Promise.all(
+      cities.map(async (city: any) => {
+        console.log(`consultando zone_id ${city.city.id}, subs_id ${data.subscription.id}`)
+        const subzone = await Subzone.findOne({
+          where: {
+            zone_id: city.city.id,
+            subs_id: data.subscription.id,
+            is_deleted: false
+          },
+          include: [
+            {
+              model: PoliticaDivision,
+              as: 'zone',
+              attributes: ['id', 'name', 'code']
+            }
+          ]
+        });
+
+        const cityData = city.toJSON();
+
+        const concatenatedName = subzone 
+          ? `${cityData.city.name} - ${subzone.get().name}` 
+          : cityData.city.name;
+          
+        return {
+          ...cityData,
+          zone: subzone ? subzone.toJSON() : null,
+          city: {
+            ...cityData.city,
+            name: concatenatedName,
+            originalName: cityData.city.name
+          }
+        };
+      })
+    );
+
+    return customResponse(true, res, 200, `Provincia encontrada`, citiesWithZones);
   } catch (error) {
     console.error('---->', error);
     badResponse(res);
