@@ -28,3 +28,8 @@ export async function uploadFileFirebase(file: any, fileName: string, folder?: s
     throw new Error(`Error al subir archivo a Firebase: ${error.message}`);
   }
 }
+
+
+export function getFirebasePublicUrl(fileName: string, folder?: string): string {
+  return `https://storage.googleapis.com/${bucket.name}/${folder ? folder + '/' : ''}${fileName}`;
+}

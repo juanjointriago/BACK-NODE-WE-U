@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { IPhotosUser } from '../interfaces/auth.interfaces';
 import { uploadFileGCS } from './gc-storage';
-import { uploadFileFirebase } from './uploadFileFirebase';
+import { uploadFileFirebase } from './firebase-storage';
 
 /**
  * Toma una cadena como argumento y devuelve un booleano

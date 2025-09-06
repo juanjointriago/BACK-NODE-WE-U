@@ -137,61 +137,73 @@ export const getProvincesAndtheirCities = async (req: Request, res: Response) =>
 export const myZonesSelected = async (req: Request, res: Response) => {
   try {
     const { data } = req.body;
-    //console.log(data);
+    console.log(req.body);
     if (data.role_id !== UserRoles.Superadmin && data.role_id !== UserRoles.SubAdmin && data.role_id !== UserRoles.Subscriber) return customResponse(false, res, 404, 'No tiene autorización para esta petición', null);
 
     const cities =
       data.role_id === UserRoles.Superadmin
         ? await DetailZonesSubAdmin.findAll({
-            where: { is_deleted: 0 },
-            attributes: ['id'],
-            include: [
-              {
-                model: PoliticaDivision,
-                as: 'city',
-                attributes: ['id', 'name', 'code'],
-                include: [
-                  {
-                    model: PoliticaDivision,
-                    as: 'province',
-                    attributes: ['id', 'name', 'code'],
-                  },
-                ],
-              },
-            ],
-          })
+          where: { is_deleted: 0 },
+          attributes: ['id'],
+          include: [
+            {
+              model: PoliticaDivision,
+              as: 'city',
+              attributes: ['id', 'name', 'code'],
+              include: [
+                {
+                  model: PoliticaDivision,
+                  as: 'province',
+                  attributes: ['id', 'name', 'code'],
+                },
+              ],
+            },
+          ],
+        })
         : await DetailZonesSubAdmin.findAll({
-            where: { user_id: data.id, is_deleted: 0 },
-            attributes: ['id', 'is_active', 'user_id'],
-            include: [
-              {
-                model: PoliticaDivision,
-                as: 'city',
-                attributes: ['id', 'name', 'code'],
-                include: [
-                  {
-                    model: PoliticaDivision,
-                    as: 'province',
-                    attributes: ['id', 'name', 'code'],
-                  },
-                ],
-              },
-            ],
-          });
+          where: { user_id: data.id, is_deleted: 0 },
+          attributes: ['id', 'is_active', 'user_id'],
+          include: [
+            {
+              model: PoliticaDivision,
+              as: 'city',
+              attributes: ['id', 'name', 'code'],
+              include: [
+                {
+                  model: PoliticaDivision,
+                  as: 'province',
+                  attributes: ['id', 'name', 'code'],
+                },
+              ],
+            },
+          ],
+        });
 
     if (!cities || cities.length === 0) {
       return customResponse(false, res, 404, 'No tiene cantones seleccionados o aprobados para administrar', null);
     }
 
+    const uniqueCities = cities.filter(
+      (city: any, index: number, self: any[]) =>
+        index === self.findIndex((c) => c.city.id === city.city.id)
+    );
+
+
+
     const citiesWithZones = await Promise.all(
-      cities.map(async (city: any) => {
-        console.log(`consultando zone_id ${city.city.id}, subs_id ${data.subscription.id}`)
-        const subzone = await Subzone.findOne({
-          where: {
-            zone_id: city.city.id,
-            subs_id: data.subscription.id,
-            is_deleted: false
-          },
+      uniqueCities.map(async (city: any) => {
+        //console.log(`consultando zone_id ${city.city.id}, subs_id ${data.subscription.id}`)
+        const subzoneWhere: any = {
+          zone_id: city.city.id,
+          is_deleted: false,
+        };
+
+        if (data.subscription?.id) {
+          subzoneWhere.subs_id = data.subscription.id;
+        }
+
+        const subzones = await Subzone.findAll({
+          where: subzoneWhere,
           include: [
             {
               model: PoliticaDivision,
@@ -203,13 +215,15 @@ export const myZonesSelected = async (req: Request, res: Response) => {
 
         const cityData = city.toJSON();
 
-        const concatenatedName = subzone 
-          ? `${cityData.city.name} - ${subzone.get().name}` 
+        const subzonesJSON = subzones.map((s) => s.toJSON());
+
+        const concatenatedName = subzonesJSON.length
+          ? `${cityData.city.name} - ${subzonesJSON.map((s) => s.name).join(' / ')}`
           : cityData.city.name;
-          
+
         return {
           ...cityData,
-          zone: subzone ? subzone.toJSON() : null,
+          zone: subzonesJSON,
           city: {
             ...cityData.city,
             name: concatenatedName,

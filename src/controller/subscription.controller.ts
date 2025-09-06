@@ -20,7 +20,7 @@ import AscSubscriber from '../models/ascSubscriber.model';
 import { emailASCSubZone } from '../templates/authEmails';
 import DetailPayment from '../models/detailPayment.model';
 import PurchasedProduct from '../models/purchasedProducts.model';
-import { uploadFileFirebase } from '../helpers/uploadFileFirebase';
+import { uploadFileFirebase } from '../helpers/firebase-storage';
 /**
  * Registers a new subscriber.
  *

@@ -10,7 +10,7 @@ const router = Router();
 router.get('/', validatorJWT, asyncMiddleware(getMySubscription));
 router.get('/payments', validatorJWT, asyncMiddleware(getMyPayments));
 router.post('/', validateRegisterSubscriber, asyncMiddleware(registerSubscriber));
-router.post('/asc', [validatorJWT, ...validateCreateUserASC], asyncMiddleware(createUserASC));
+router.post('/asc', [validatorOnlyJWT, ...validateCreateUserASC], asyncMiddleware(createUserASC));
 router.post('/subzone', [validatorJWT, ...validateCreateSubZone], asyncMiddleware(createSubZone));
 router.post('/validations', preValidateRegisterSubscriber, asyncMiddleware(validationFieldRegisterSubscriber));
 router.post('/payment/asc', [validatorJWT, ...validatePayment], asyncMiddleware(paymentAsc));

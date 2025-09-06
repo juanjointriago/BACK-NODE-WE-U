@@ -22,6 +22,7 @@ import { generateSignedUrlGCS, getFilesNameFromFolder, uploadFileGCS } from '../
 import { getExtension } from '../helpers/upload-file';
 import Payment from '../models/payment.model';
 import Polygon from '../models/polygon.model';
+import { getFirebasePublicUrl } from '../helpers/firebase-storage';
 
 /**
  * Obtiene un usuario por id y devuelve el usuario con el rol, la zona y el tipo ASC asociado
@@ -75,10 +76,10 @@ export const geInfotUserLogged = async (req: Request, res: Response) => {
     if (data.role_id === UserRoles.ASC) {
     }
 
-    data.photo_home = data.photo_home ? await generateSignedUrlGCS(data.photo_home, 'users') : data.photo_home;
-    data.photo_id_back = data.photo_id_back ? await generateSignedUrlGCS(data.photo_id_back, 'users') : data.photo_id_back;
-    data.photo_id_front = data.photo_id_front ? await generateSignedUrlGCS(data.photo_id_front, 'users') : data.photo_id_front;
-    data.photo_profile = data.photo_profile ? await generateSignedUrlGCS(data.photo_profile, getFolderUserPhotoProfile(data.photo_profile)) : data.photo_profile;
+    data.photo_home = data.photo_home ? await getFirebasePublicUrl(data.photo_home, 'users') : data.photo_home;
+    data.photo_id_back = data.photo_id_back ? await getFirebasePublicUrl(data.photo_id_back, 'users') : data.photo_id_back;
+    data.photo_id_front = data.photo_id_front ? await getFirebasePublicUrl(data.photo_id_front, 'users') : data.photo_id_front;
+    data.photo_profile = data.photo_profile ? await getFirebasePublicUrl(data.photo_profile, getFolderUserPhotoProfile(data.photo_profile)) : data.photo_profile;
 
     const subscription =
       data.role_id === UserRoles.Subscriber
