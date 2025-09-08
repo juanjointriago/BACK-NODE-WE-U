@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUserById, getUsers, changeStatusUserById, geInfotUserLogged, deleteUser, updateAddressAndCoords, getASCOnline, getUsersFiveKmAround, updateInfoUser, updateSubzoneByUserId, updateAvailableAsc, getPaymentsByUserId, getAscByZone, getAscBySubzone, getAvatars } from '../controller/user.controller';
+import { getUserById, getUsers, changeStatusUserById, geInfotUserLogged, deleteUser, updateAddressAndCoords, getASCOnline, getUsersFiveKmAround, updateInfoUser, updateSubzoneByUserId, updateAvailableAsc, getPaymentsByUserId, getAscByZone, getAscBySubzone, getAvatars, updateUserAvatar } from '../controller/user.controller';
 import { validatorJWT } from '../middleware/validator-jwt.middlewares';
 import { validateFieldsChangeStatusUserById, validateFieldsGetUsers, validateFieldsUpdateAddressAndCoords } from '../middleware/validations/validateInputsUser';
 import { asyncMiddleware } from '../middleware/asyncMiddleware';
@@ -22,5 +22,6 @@ router.put('/updateAddressAndCoords/:idCity', [...validateFieldsUpdateAddressAnd
 router.put('/updateInfoUser', validatorJWT, updateInfoUser);
 router.put('/subzone', validatorJWT, asyncMiddleware(updateSubzoneByUserId));
 router.delete('/deleteUser', validatorJWT, deleteUser);
+router.put('/updateUserAvatar', validatorJWT, updateUserAvatar);
 
 export default router;

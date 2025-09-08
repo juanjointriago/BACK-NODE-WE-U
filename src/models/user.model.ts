@@ -36,6 +36,8 @@ const User = db.define('users', {
   whatsapp_group: { type: DataTypes.STRING },
   zone_id: { type: DataTypes.INTEGER },
   subzone_id: { type: DataTypes.INTEGER },
+  avatar: { type: DataTypes.STRING },
+  avatar_params: { type: DataTypes.STRING}
 });
 
 User.belongsTo(Role, { foreignKey: 'role_id' });

@@ -33,7 +33,7 @@ export const getUserById = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({
       where: { id, is_active: 1, is_deleted: 0 },
-      attributes: ['id', 'address', 'email', 'full_name', 'identification', 'online', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'whatsapp_group'],
+      attributes: ['id', 'address', 'email', 'full_name', 'identification', 'online', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'whatsapp_group', 'avatar'],
       include: [
         {
           model: Role,
@@ -151,7 +151,7 @@ export const getUsers = async (req: Request, res: Response) => {
           subzone_id: { [Op.in]: subzones },
           full_name: searchName ? { [Op.substring]: searchName } : { [Op.not]: null },
         },
-        attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at'],
+        attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at', 'avatar'],
         include: [
           {
             model: Role,
@@ -209,7 +209,7 @@ export const getUsers = async (req: Request, res: Response) => {
               subzone_id: subzoneId,
               full_name: searchName ? { [Op.substring]: searchName } : { [Op.not]: null },
             },
-            attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at'],
+            attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at', 'avatar'],
             include: [
               {
                 model: Role,
@@ -267,7 +267,7 @@ export const getUsers = async (req: Request, res: Response) => {
               zone_id: zoneId,
               full_name: searchName ? { [Op.substring]: searchName } : { [Op.not]: null },
             },
-            attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at'],
+            attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at', 'avatar'],
             include: [
               {
                 model: Role,
@@ -325,7 +325,7 @@ export const getUsers = async (req: Request, res: Response) => {
             is_deleted: 0,
             full_name: searchName ? { [Op.substring]: searchName } : { [Op.not]: null },
           },
-          attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at'],
+          attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at', 'avatar'],
           include: [
             {
               model: Role,
@@ -391,7 +391,7 @@ export const getUsers = async (req: Request, res: Response) => {
               zone_id: zoneId,
               full_name: searchName ? { [Op.substring]: searchName } : { [Op.not]: null },
             },
-            attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at'],
+            attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at', 'avatar'],
             include: [
               {
                 model: Role,
@@ -442,7 +442,7 @@ export const getUsers = async (req: Request, res: Response) => {
               is_deleted: 0,
               full_name: searchName ? { [Op.substring]: searchName } : { [Op.not]: null },
             },
-            attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at'],
+            attributes: ['id', 'full_name', 'email', 'is_active', 'phone', 'photo_home', 'photo_id_back', 'photo_id_front', 'photo_profile', 'lat', 'lng', 'created_at', 'avatar'],
             include: [
               {
                 model: Role,
@@ -1199,4 +1199,33 @@ export const getAvatars = async (req: Request, res: Response) => {
       })
   );
   return customResponse(true, res, 200, 'Avatares', urlsAndNameFiles);
+};
+
+export const updateUserAvatar = async (req: Request, res: Response) => {
+  try {
+    const { id, avatar, avatar_params } = req.body;
+
+    if (!id || !avatar) {
+      return customResponse(false, res, 400, 'Se requiere id de usuario y avatar en base64', null);
+    }
+
+    const user = await User.findOne({
+      where: { id, is_deleted: 0 },
+      attributes: ['id', 'full_name', 'avatar', 'avatar_params'],
+    });
+
+    if (!user) {
+      return customResponse(false, res, 404, 'Usuario no encontrado', null);
+    }
+
+    await user.update({ avatar, avatar_params});
+
+    return customResponse(true, res, 200, 'Avatar actualizado correctamente', {
+      id: user.get().id,
+      avatar: user.get().avatar,
+    });
+  } catch (error) {
+    console.error('Error al actualizar avatar:', error);
+    badResponse(res);
+  }
 };
